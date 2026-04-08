@@ -8,8 +8,6 @@
     :root {
       --widget-width: 338px;
       --widget-height: 188px;
-      --stage-width: 720px;
-      --stage-height: 420px;
       --stage-padding: 18px;
       --radius: 34px;
       --bg-top: #1a2433;
@@ -29,15 +27,10 @@
 
     html,
     body {
-      width: var(--stage-width);
-      min-width: var(--stage-width);
-      max-width: var(--stage-width);
-      height: var(--stage-height);
-      min-height: var(--stage-height);
-      max-height: var(--stage-height);
+      width: 100%;
+      min-height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden;
       background: #171717;
     }
 
@@ -49,17 +42,16 @@
 
     .embed-stage {
       position: relative;
-      width: var(--stage-width);
-      height: var(--stage-height);
+      width: 100%;
+      min-height: calc(var(--widget-height) + (var(--stage-padding) * 2));
+      padding: var(--stage-padding);
       background: #171717;
     }
 
     .widget-shell {
-      position: absolute;
-      top: var(--stage-padding);
-      left: var(--stage-padding);
-      width: var(--widget-width);
-      height: var(--widget-height);
+      position: relative;
+      width: min(100%, var(--widget-width));
+      min-height: var(--widget-height);
       margin: 0;
     }
 
