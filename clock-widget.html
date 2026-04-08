@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=720, initial-scale=1.0">
   <title>iPhone-Style Clock Widget</title>
   <style>
     :root {
       --widget-width: 338px;
       --widget-height: 188px;
+      --stage-width: 720px;
+      --stage-height: 420px;
       --radius: 34px;
       --bg-top: #1a2433;
       --bg-bottom: #0b111a;
@@ -26,12 +28,12 @@
 
     html,
     body {
-      width: var(--widget-width);
-      min-width: var(--widget-width);
-      max-width: var(--widget-width);
-      height: var(--widget-height);
-      min-height: var(--widget-height);
-      max-height: var(--widget-height);
+      width: var(--stage-width);
+      min-width: var(--stage-width);
+      max-width: var(--stage-width);
+      height: var(--stage-height);
+      min-height: var(--stage-height);
+      max-height: var(--stage-height);
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -44,13 +46,21 @@
       font-family: var(--font-stack);
     }
 
+    .embed-stage {
+      position: relative;
+      width: var(--stage-width);
+      height: var(--stage-height);
+      background: transparent;
+    }
+
     .widget-shell {
-      position: fixed;
-      top: 0;
-      left: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
       width: var(--widget-width);
       height: var(--widget-height);
       margin: 0;
+      transform: translate(-50%, -50%);
     }
 
     .clock-widget {
@@ -271,43 +281,45 @@
   </style>
 </head>
 <body>
-  <div class="widget-shell">
-    <section class="clock-widget" aria-label="Current time widget">
-      <div class="clock-top">
-        <div class="clock-label">Local Time</div>
-        <div class="clock-zone" aria-label="Timezone">
-          <span class="clock-zone-dot" aria-hidden="true"></span>
-          <span id="timezone">Loading...</span>
+  <div class="embed-stage">
+    <div class="widget-shell">
+      <section class="clock-widget" aria-label="Current time widget">
+        <div class="clock-top">
+          <div class="clock-label">Local Time</div>
+          <div class="clock-zone" aria-label="Timezone">
+            <span class="clock-zone-dot" aria-hidden="true"></span>
+            <span id="timezone">Loading...</span>
+          </div>
         </div>
-      </div>
 
-      <div class="clock-time" aria-live="polite">
-        <div class="clock-hours" id="time">00:00</div>
-        <div class="clock-meridiem" id="meridiem">AM</div>
-      </div>
+        <div class="clock-time" aria-live="polite">
+          <div class="clock-hours" id="time">00:00</div>
+          <div class="clock-meridiem" id="meridiem">AM</div>
+        </div>
 
-      <div class="clock-meta">
-        <div class="clock-date" id="date">Monday, January 1</div>
-      </div>
-    </section>
+        <div class="clock-meta">
+          <div class="clock-date" id="date">Monday, January 1</div>
+        </div>
+      </section>
 
-    <div class="theme-menu">
-      <button class="theme-trigger" id="theme-trigger" type="button" aria-label="Open color options" aria-expanded="false" aria-controls="theme-picker">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 3.75A8.25 8.25 0 1 0 12 20.25h.46a2.54 2.54 0 0 0 2.54-2.54 2.54 2.54 0 0 1 2.54-2.54h.71A3.75 3.75 0 0 0 22 11.42C21.7 7.16 17.53 3.75 12 3.75Z" stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="7.8" cy="11.1" r="1.1" fill="currentColor"/>
-          <circle cx="10.9" cy="7.8" r="1.1" fill="currentColor"/>
-          <circle cx="15.1" cy="8.5" r="1.1" fill="currentColor"/>
-        </svg>
-      </button>
+      <div class="theme-menu">
+        <button class="theme-trigger" id="theme-trigger" type="button" aria-label="Open color options" aria-expanded="false" aria-controls="theme-picker">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3.75A8.25 8.25 0 1 0 12 20.25h.46a2.54 2.54 0 0 0 2.54-2.54 2.54 2.54 0 0 1 2.54-2.54h.71A3.75 3.75 0 0 0 22 11.42C21.7 7.16 17.53 3.75 12 3.75Z" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="7.8" cy="11.1" r="1.1" fill="currentColor"/>
+            <circle cx="10.9" cy="7.8" r="1.1" fill="currentColor"/>
+            <circle cx="15.1" cy="8.5" r="1.1" fill="currentColor"/>
+          </svg>
+        </button>
 
-      <div class="theme-picker" id="theme-picker" data-open="false" aria-label="Color theme chooser">
-        <div class="theme-label">Colors</div>
-        <div class="theme-options" id="theme-options">
-          <button class="theme-swatch" type="button" data-theme="midnight" aria-label="Midnight blue theme" aria-pressed="true" style="--swatch: linear-gradient(135deg, #314d73, #0b111a);"></button>
-          <button class="theme-swatch" type="button" data-theme="sunset" aria-label="Sunset theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #88546c, #291722);"></button>
-          <button class="theme-swatch" type="button" data-theme="forest" aria-label="Forest theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #30564f, #0f1918);"></button>
-          <button class="theme-swatch" type="button" data-theme="slate" aria-label="Slate theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #515868, #161a23);"></button>
+        <div class="theme-picker" id="theme-picker" data-open="false" aria-label="Color theme chooser">
+          <div class="theme-label">Colors</div>
+          <div class="theme-options" id="theme-options">
+            <button class="theme-swatch" type="button" data-theme="midnight" aria-label="Midnight blue theme" aria-pressed="true" style="--swatch: linear-gradient(135deg, #314d73, #0b111a);"></button>
+            <button class="theme-swatch" type="button" data-theme="sunset" aria-label="Sunset theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #88546c, #291722);"></button>
+            <button class="theme-swatch" type="button" data-theme="forest" aria-label="Forest theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #30564f, #0f1918);"></button>
+            <button class="theme-swatch" type="button" data-theme="slate" aria-label="Slate theme" aria-pressed="false" style="--swatch: linear-gradient(135deg, #515868, #161a23);"></button>
+          </div>
         </div>
       </div>
     </div>
