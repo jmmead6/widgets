@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=720, initial-scale=1.0">
   <title>Clock Widget Notion Embed</title>
   <style>
     :root {
-      --stage-padding: 18px;
       --widget-width: 338px;
       --widget-height: 188px;
-      --frame-width: calc(var(--widget-width) + (var(--stage-padding) * 2));
-      --frame-height: calc(var(--widget-height) + (var(--stage-padding) * 2));
+      --stage-width: 720px;
+      --stage-height: 420px;
+      --stage-padding: 18px;
       --radius: 34px;
       --bg-top: #1a2433;
       --bg-bottom: #0b111a;
@@ -29,19 +29,28 @@
 
     html,
     body {
-      width: var(--frame-width);
-      height: var(--frame-height);
+      width: var(--stage-width);
+      min-width: var(--stage-width);
+      max-width: var(--stage-width);
+      height: var(--stage-height);
+      min-height: var(--stage-height);
+      max-height: var(--stage-height);
       margin: 0;
       padding: 0;
       overflow: hidden;
       background: #171717;
+    }
+
+    body {
+      position: relative;
+      display: block;
       font-family: var(--font-stack);
     }
 
-    .stage {
+    .embed-stage {
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: var(--stage-width);
+      height: var(--stage-height);
       background: #171717;
     }
 
@@ -51,6 +60,7 @@
       left: var(--stage-padding);
       width: var(--widget-width);
       height: var(--widget-height);
+      margin: 0;
     }
 
     .clock-widget {
@@ -73,6 +83,7 @@
     .clock-widget::after {
       content: "";
       position: absolute;
+      inset: auto;
       border-radius: 999px;
       z-index: -1;
       filter: blur(8px);
@@ -139,7 +150,7 @@
     }
 
     .clock-hours {
-      font-size: 5.35rem;
+      font-size: clamp(3.8rem, 13vw, 5.35rem);
       font-weight: 700;
       letter-spacing: -0.06em;
       text-shadow: 0 8px 30px rgba(0, 0, 0, 0.24);
@@ -172,7 +183,7 @@
       position: absolute;
       right: 14px;
       bottom: 14px;
-      z-index: 3;
+      z-index: 2;
     }
 
     .theme-trigger {
@@ -210,13 +221,13 @@
       display: none;
       align-items: center;
       gap: 12px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 20px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      box-shadow: 0 14px 34px rgba(4, 8, 18, 0.24);
       white-space: nowrap;
     }
 
@@ -235,7 +246,7 @@
     .theme-options {
       display: inline-flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
     .theme-swatch {
@@ -259,12 +270,12 @@
     .theme-swatch[aria-pressed="true"] {
       box-shadow:
         0 0 0 2px rgba(255, 255, 255, 0.95),
-        0 0 0 6px rgba(255, 255, 255, 0.1);
+        0 0 0 6px rgba(255, 255, 255, 0.12);
     }
   </style>
 </head>
 <body>
-  <main class="stage" aria-label="Clock widget embed stage">
+  <div class="embed-stage">
     <div class="widget-shell">
       <section class="clock-widget" aria-label="Current time widget">
         <div class="clock-top">
@@ -306,8 +317,7 @@
         </div>
       </div>
     </div>
-
-  </main>
+  </div>
 
   <script>
     const timeEl = document.getElementById("time");
@@ -319,10 +329,30 @@
     const themeOptionsEl = document.getElementById("theme-options");
 
     const themes = {
-      midnight: { bgTop: "#1a2433", bgBottom: "#0b111a", accent: "#80c7ff", accentSoft: "rgba(128, 199, 255, 0.18)" },
-      sunset: { bgTop: "#5d3146", bgBottom: "#1a0d14", accent: "#ffb37c", accentSoft: "rgba(255, 179, 124, 0.18)" },
-      forest: { bgTop: "#1e3c39", bgBottom: "#091110", accent: "#8ce2c7", accentSoft: "rgba(140, 226, 199, 0.16)" },
-      slate: { bgTop: "#394153", bgBottom: "#0f131b", accent: "#b6c7ff", accentSoft: "rgba(182, 199, 255, 0.16)" }
+      midnight: {
+        bgTop: "#1a2433",
+        bgBottom: "#0b111a",
+        accent: "#80c7ff",
+        accentSoft: "rgba(128, 199, 255, 0.18)"
+      },
+      sunset: {
+        bgTop: "#5d3146",
+        bgBottom: "#1a0d14",
+        accent: "#ffb37c",
+        accentSoft: "rgba(255, 179, 124, 0.18)"
+      },
+      forest: {
+        bgTop: "#1e3c39",
+        bgBottom: "#091110",
+        accent: "#8ce2c7",
+        accentSoft: "rgba(140, 226, 199, 0.16)"
+      },
+      slate: {
+        bgTop: "#394153",
+        bgBottom: "#0f131b",
+        accent: "#b6c7ff",
+        accentSoft: "rgba(182, 199, 255, 0.16)"
+      }
     };
 
     function getTimezoneLabel() {
@@ -333,6 +363,7 @@
 
     function updateClock() {
       const now = new Date();
+
       const timeParts = new Intl.DateTimeFormat([], {
         hour: "numeric",
         minute: "2-digit",
@@ -345,6 +376,7 @@
         .join("");
 
       const meridiem = timeParts.find((part) => part.type === "dayPeriod")?.value ?? "";
+
       timeEl.textContent = hourMinute;
       meridiemEl.textContent = meridiem;
       dateEl.textContent = new Intl.DateTimeFormat([], {
@@ -356,14 +388,17 @@
 
     function setTheme(themeName) {
       const theme = themes[themeName];
-      if (!theme) return;
+      if (!theme) {
+        return;
+      }
 
       document.documentElement.style.setProperty("--bg-top", theme.bgTop);
       document.documentElement.style.setProperty("--bg-bottom", theme.bgBottom);
       document.documentElement.style.setProperty("--accent", theme.accent);
       document.documentElement.style.setProperty("--accent-soft", theme.accentSoft);
 
-      themeOptionsEl.querySelectorAll(".theme-swatch").forEach((swatch) => {
+      const swatches = themeOptionsEl.querySelectorAll(".theme-swatch");
+      swatches.forEach((swatch) => {
         swatch.setAttribute("aria-pressed", String(swatch.dataset.theme === themeName));
       });
     }
@@ -374,19 +409,26 @@
     }
 
     timezoneEl.textContent = getTimezoneLabel();
+
     themeTriggerEl.addEventListener("click", () => {
       setThemeMenu(themePickerEl.dataset.open !== "true");
     });
 
     themeOptionsEl.addEventListener("click", (event) => {
       const swatch = event.target.closest(".theme-swatch");
-      if (!swatch) return;
+      if (!swatch) {
+        return;
+      }
+
       setTheme(swatch.dataset.theme);
       setThemeMenu(false);
     });
 
     document.addEventListener("click", (event) => {
-      if (event.target.closest(".theme-menu")) return;
+      if (event.target.closest(".theme-menu")) {
+        return;
+      }
+
       setThemeMenu(false);
     });
 
